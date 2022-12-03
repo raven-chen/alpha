@@ -5,9 +5,9 @@ import (
 
 	"github.com/qor5/admin/presets"
 	"github.com/qor5/admin/presets/gorm2op"
-	"github.com/raven-chen/alpha/models"
 	"github.com/qor5/ui/vuetify"
 	"github.com/qor5/web"
+	"github.com/raven-chen/alpha/models"
 	h "github.com/theplant/htmlgo"
 )
 
@@ -39,6 +39,8 @@ func initializeProject() (b *presets.Builder) {
 	// Use m to customize the model, Or config more models here.
 	m := b.Model(&models.Post{})
 	_ = m
+
+	b.Model(&models.Product{})
 
 	return
 }

@@ -22,7 +22,7 @@ func ConnectDB() (db *gorm.DB) {
 	db.Logger = db.Logger.LogMode(logger.Info)
 
 	// Create data table in the database
-	err = db.AutoMigrate(models.Post{})
+	err = db.AutoMigrate(models.Post{}, models.Product{})
 	if err != nil {
 		panic(err)
 	}

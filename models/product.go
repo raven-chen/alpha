@@ -2,11 +2,12 @@ package models
 
 import "time"
 
-type Post struct {
+type Product struct {
 	ID        uint
 	UpdatedAt time.Time
 	CreatedAt time.Time
 
-	Title string
-	Body  string
+	Name  string
+	Price float64
+	Image string
 }
