@@ -1,16 +1,15 @@
-package admin
+package database
 
 import (
 	"os"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/raven-chen/alpha/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-func ConnectDB() (db *gorm.DB) {
+func InitDB() (db *gorm.DB) {
 	var err error
 	// Create database connection
 	db, err = gorm.Open(postgres.Open(os.Getenv("DB_PARAMS")))
@@ -20,12 +19,6 @@ func ConnectDB() (db *gorm.DB) {
 
 	// Set db log level
 	db.Logger = db.Logger.LogMode(logger.Info)
-
-	// Create data table in the database
-	err = db.AutoMigrate(models.Post{}, models.Product{})
-	if err != nil {
-		panic(err)
-	}
 
 	return
 }

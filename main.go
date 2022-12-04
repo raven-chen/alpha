@@ -6,11 +6,16 @@ import (
 	"os"
 
 	"github.com/raven-chen/alpha/admin"
+	"github.com/raven-chen/alpha/database"
+	"github.com/raven-chen/alpha/orders"
 )
 
 func main() {
 	// Setup project
-	mux := admin.Initialize()
+	db := database.InitDB()
+	mux := http.NewServeMux()
+	b := admin.Initialize(db, mux)
+	orders.Init(db, mux, b)
 
 	port := os.Getenv("PORT")
 	if port == "" {

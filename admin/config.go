@@ -7,20 +7,18 @@ import (
 	"github.com/qor5/admin/presets/gorm2op"
 	"github.com/qor5/ui/vuetify"
 	"github.com/qor5/web"
-	"github.com/raven-chen/alpha/models"
 	h "github.com/theplant/htmlgo"
+	"gorm.io/gorm"
 )
 
-func Initialize() *http.ServeMux {
-	b := initializeProject()
-	mux := SetupRouter(b)
+func Initialize(db *gorm.DB, mux *http.ServeMux) *presets.Builder {
+	b := initializeProject(db)
+	mux.Handle("/", b)
 
-	return mux
+	return b
 }
 
-func initializeProject() (b *presets.Builder) {
-	db := ConnectDB()
-
+func initializeProject(db *gorm.DB) (b *presets.Builder) {
 	// Initialize the builder of QOR5
 	b = presets.New()
 
@@ -34,13 +32,6 @@ func initializeProject() (b *presets.Builder) {
 				h.P().Text("Change your home page here"))
 			return
 		})
-
-	// Register Post into the builder
-	// Use m to customize the model, Or config more models here.
-	m := b.Model(&models.Post{})
-	_ = m
-
-	b.Model(&models.Product{})
 
 	return
 }
