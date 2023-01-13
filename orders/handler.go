@@ -7,20 +7,27 @@ import (
 	"gorm.io/gorm"
 )
 
+const menuTmpl = "menu.tmpl"
+
 func Menu(db *gorm.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		prods := []Product{}
 		if err := db.Find(&prods).Error; err != nil {
-			fmt.Fprintln(w, "<div style='color:red;'>This is an error occurred</div>")
+			fmt.Fprintln(w, "<div style='color:red;'>There is an error occurred</div>")
+			return
+		}
+		tmpl, ok := templates[menuTmpl]
+		if !ok {
+			fmt.Fprintf(w, "<div style='color:red;'>Cannot find template: %s</div>", menuTmpl)
 			return
 		}
 
-		content := "<table> <tr><td>Name</td><td>Price</td></tr>"
-		for _, prod := range prods {
-			content += fmt.Sprintf("<tr><td>%s</td><td>%v</td></tr>", prod.Name, prod.Price)
+		data := map[string]interface{}{
+			"Products": prods,
 		}
-		content += "</table>"
 
-		fmt.Fprintln(w, content)
+		if err := tmpl.Execute(w, data); err != nil {
+			fmt.Fprintf(w, "<div style='color:red;'>There is an error occurred: %s</div>", err.Error())
+		}
 	})
 }

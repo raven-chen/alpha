@@ -1,0 +1,7 @@
+<table>
+    <tr><td>Name</td><td>Price</td></tr>
+
+    {{ range $_, $prod := .Products }}
+        <tr><td>{{$prod.Name}}</td><td>{{$prod.Price}}</td></tr>
+    {{ end }}
+</table>
