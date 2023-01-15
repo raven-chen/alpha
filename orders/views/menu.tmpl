@@ -1,7 +1,91 @@
 <table>
-    <tr><td>Name</td><td>Price</td></tr>
+    <tr><td>Name</td><td>Price</td><td></td></tr>
 
     {{ range $_, $prod := .Products }}
-        <tr><td>{{$prod.Name}}</td><td>{{$prod.Price}}</td></tr>
+        <tr>
+            <td>{{$prod.Name}}</td>
+            <td>{{$prod.Price}}</td>
+            <td>
+                <button data-id="{{$prod.ID}}" data-name="{{$prod.Name}}" data-price="{{$prod.Price}}" class="js-btn-add-to-cart"> + </button>
+
+                <button data-id="{{$prod.ID}}"  class="js-btn-remove-from-cart"> - </button>
+            </td>
+        </tr>
     {{ end }}
 </table>
+
+
+<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.6/underscore-umd-min.js"></script>
+
+
+<script>
+    $(document).ready(function(){
+        $(".js-btn-add-to-cart").on("click", AddToCart);
+        $(".js-btn-remove-from-cart").on("click", RemoveFromCart);
+    });
+
+    function GetCart() {
+        var cart = [];
+        if (localStorage.Cart != null) {
+            cart = JSON.parse(localStorage.Cart);
+        }
+
+        return cart;
+    }
+
+    var AddToCart = function() {
+        let cart = GetCart();
+
+        // 数据收集
+        let item = {
+            ID: $(this).data("id"),
+            Name: $(this).data("name"),
+            Price: $(this).data("price"),
+            Quantity: 1,
+        }
+
+        let idx = _.findLastIndex(cart, {
+            ID: item.ID
+        })
+
+        var qty = 0;
+        if (idx == -1) {
+            cart.push(item);
+        } else {
+            qty = cart[idx].Quantity + 1;
+            cart[idx].Quantity = qty;
+        }
+
+        localStorage.Cart = JSON.stringify(cart);
+    }
+
+    var RemoveFromCart = function() {
+        let cart = GetCart();
+
+        // 数据收集
+        let item = {
+            ID: $(this).data("id"),
+        }
+
+        let idx = _.findLastIndex(cart, {
+            ID: item.ID
+        })
+
+        var qty = 0;
+        if (idx == -1) {
+            return
+        } else {
+            if (cart[idx].Quantity > 1) {
+                qty = cart[idx].Quantity - 1;
+                cart[idx].Quantity = qty;
+            } else {
+                cart = _.reject(cart, function(i) {
+                    return i.ID == item.ID
+                })
+            }
+        }
+
+        localStorage.Cart = JSON.stringify(cart);
+    }
+</script>
